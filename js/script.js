@@ -31,5 +31,60 @@ window.addEventListener('DOMContentLoaded', function() {
                 }
             }
         }
-    });
+    });  
+
+    //timer
+
+    let deadLine = '2020-01-29';
+
+    function getTimeRemaining(endtime) {
+        let t = Date.parse(endtime) - Date.parse(new Date()),
+            seconds = Math.floor((t/1000) % 60),
+            minutes = Math.floor((t/1000/60) % 60),
+            hours = Math.floor((t/(1000*60*60)));
+
+        return {
+            'total': t,
+            'hours': hours,
+            'minutes': minutes,
+            'seconds': seconds
+        };
+    }
+
+    function setClock(id, endtime) {
+        let timer = document.getElementById(id),
+            hours = timer.querySelector('.hours'),
+            minutes = timer.querySelector('.minutes'),
+            seconds = timer.querySelector('.seconds'),
+            timeInterval = setInterval(updateClock, 1000);
+
+        function updateClock() {
+            let t = getTimeRemaining(endtime);
+
+            for(var key in t) {
+                if(String(t[key]).length < 2) {
+                    t[key] = "0" + t[key];
+                }
+            }
+
+            if(t.hours < 0 && t.minutes < 0 && t.seconds < 0) {
+                hours.textContent = '00';
+                minutes.textContent = '00';
+                seconds.textContent = '00';
+            }
+            
+            hours.textContent = t.hours;
+            minutes.textContent = t.minutes;
+            seconds.textContent = t.seconds; 
+            
+            if(t.total <= 0 || (t.hours <= 0 && t.minutes <= 0 && t.seconds <= 0)) {
+                clearInterval(timeInterval);
+            }
+        }
+    }
+
+    setClock('timer', deadLine);
+
+    // console.log(Date.parse(deadLine) - Date.parse(new Date()));
+    
 });
