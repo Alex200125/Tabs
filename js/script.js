@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     //timer
 
-    let deadLine = '2020-01-29';
+    let deadLine = '2020-02-6';
 
     function getTimeRemaining(endtime) {
         let t = Date.parse(endtime) - Date.parse(new Date()),
@@ -86,5 +86,24 @@ window.addEventListener('DOMContentLoaded', function() {
     setClock('timer', deadLine);
 
     // console.log(Date.parse(deadLine) - Date.parse(new Date()));
+
+    //Modal
+
+    let more = document.querySelector('.more'),
+        overlay = document.querySelector('.overlay'),
+        close = document.querySelector('.popup-close');
     
+    more.addEventListener('click', function() {
+        overlay.style.display = 'block';
+        this.classList.add('more-splash');
+
+        document.body.style.overflow = 'hidden';
+    }); 
+
+    close.addEventListener('click', function() {
+        overlay.style.display = 'none';
+        more.classList.remove('more-splash');
+        document.body.style.overflow = '';
+    });
+     
 });
