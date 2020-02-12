@@ -39,11 +39,38 @@
 // console.log(double(5));
 // console.log(double(10));
 
-let age = document.getElementById('age');
-function showUser(surname, name) {
-alert("Пользователь " + surname + " " + name + ", его возраст " + this.value);
+// let age = document.getElementById('age');
+// function showUser(surname, name) {
+// alert("Пользователь " + surname + " " + name + ", его возраст " + this.value);
+// }
+// // call.showUser(age, 'name', 'nadf');
+
+// showUser.call(age, 'Smit', 'Jon');
+
+function calc(a, b = 2) {
+    //b = b || 2;
+    console.log(a * b);
 }
-// call.showUser(age, 'name', 'nadf');
 
-showUser.call(age, 'Smit', 'Jon');
+calc(2, 5);
+calc(6);
 
+class Father {
+    constructor(height, width = 75, name = 'Alex') {
+        this.height = height;
+        this.width = width;
+        this.name = name;
+    }
+
+    calcArea() {
+        return this.width * this.height;
+    }
+    sayName() {
+        console.log(`My name is ${this.name}`);
+    }
+}
+
+const square = new Father(4);
+
+console.log(square.calcArea());
+square.sayName();
