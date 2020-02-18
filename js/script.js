@@ -35,7 +35,7 @@ window.addEventListener('DOMContentLoaded', function() {
 
     //timer
 
-    let deadLine = '2020-02-6';
+    let deadLine = '2020-03-10';
 
     let getTimeRemaining = endtime => {
         let t = Date.parse(endtime) - Date.parse(new Date()),
@@ -105,5 +105,114 @@ window.addEventListener('DOMContentLoaded', function() {
         more.classList.remove('more-splash');
         document.body.style.overflow = '';
     });
+
+    //FORM
+
+    let message = {
+        loading: "Загрузка",
+        success: "Спасибо, всё сработало",
+        filed: "Что-то не так"
+    };
+
+    let form = document.querySelector('.main-form'),
+        input = form.getElementsByTagName('input'),
+        statusMessage = document.createElement('div');
+
+    statusMessage.classList.add('status');
+
+    form.addEventListener('submit', function(event) {
+       event.preventDefault();
+       form.appendChild(statusMessage); 
+
+       let request = new XMLHttpRequest();
+
+       request.open('POST', 'server.php'); 
+       request.setRequestHeader('Content-Type', 'application/json', 'charset=utf-8');
+       
+       let formData = new FormData(form);
+
+        let obj = {};
+        formData.forEach(function(value, key) {
+            obj[key] = value;
+        });
+
+        let json = JSON.stringify(obj); 
+
+       request.send(json);
+
+        request.addEventListener('readystatechange', function() {
+            if(request.readyState < 4) {
+                statusMessage.innerHTML = message.loading;
+            } else if(request.readyState == 4 && request.status == 200) {
+                statusMessage.innerHTML = message.success;
+            } else {
+                statusMessage.innerHTML = message.filed;
+            }
+        });
+
+        for(let i = 0; i < input.length; i++) {
+            input[i].value = "";
+        }
+
+    });
+
+    //kontact FORM
+    let fm = document.getElementById('form'),
+        inp = fm.querySelectorAll('input');
+
+    fm.addEventListener('submit', function(event) {
+        event.preventDefault();
+        fm.appendChild(statusMessage);
+
+        let req = new XMLHttpRequest();
+
+        req.open('POST', 'server.php');
+        req.setRequestHeader('Content-Type', 'application/json', 'charset=utf-8');
+
+        let fData = new FormData(fm);
+
+        let object = {};
+        fData.forEach(function(value, key) {
+            object[key] = value;
+        });
+
+        let json = JSON.stringify(object);
+
+        req.send(json);
+        
+        req.addEventListener('readystatechange', function() {
+            if(req.readyState < 4) {
+                statusMessage.innerHTML = message.loading;
+                // setInterval(sayTochka, 1000);
+                
+                
+                // function sayTochka() {
+                //     statusMessage.innerHTML += ".";  
+                // }
+                    
+                
+            } else if(req.readyState == 4 && req.status == 200) {
+                statusMessage.innerHTML = message.success;
+                
+            } else {
+                statusMessage.innerHTML = message.filed;
+            }
+        });
+        
+        
+
+        for(let j = 0; j < 2; j++) {
+            for(let i = 0; i < inp[j].length; i++) {
+                inp[i].value = "";
+            }
+        }
+        
+    }); 
+        
+
+    
+
+    
+
      
 });
