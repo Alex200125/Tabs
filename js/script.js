@@ -165,44 +165,141 @@ window.addEventListener('DOMContentLoaded', function() {
 
     let fm = document.getElementById('form'),
         inp = fm.querySelectorAll('input');
-
-    return new Promise(function(resolve, reject) {
+        
+    
         fm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            fm.appendChild(statusMessage);
-    
-            let req = new XMLHttpRequest();
-    
-            req.open('POST', 'server.php');
-            req.setRequestHeader('Content-Type', 'application/json', 'charset=utf-8');
-    
-            let fData = new FormData(fm);
-    
-            let object = {};
-            fData.forEach(function(value, key) {
-                object[key] = value;
-            });
-    
-            let json = JSON.stringify(object);
-    
-            req.send(json);
-            
-            req.addEventListener('readystatechange', function() {
-                let prom = new Promise(function(resolve, reject) {
-                    req.readyState == 4 ? resolve(message.success) : reject(message.filed);
+            return new Promise((resolve, reject) => {
+                event.preventDefault();
+                fm.appendChild(statusMessage);
+        
+                let req = new XMLHttpRequest();
+        
+                req.open('POST', 'server.php');
+                req.setRequestHeader('Content-Type', 'application/json', 'charset=utf-8');
+        
+                let fData = new FormData(fm);
+        
+                let object = {};
+                fData.forEach(function(value, key) {
+                    object[key] = value;
                 });
+        
+                let json = JSON.stringify(object);
+        
+                req.send(json);
+                
+                req.addEventListener('readystatechange', function() {
+                    let prom = new Promise((resolve, reject) => {
+                        req.readyState == 4 ? resolve(message.success) : reject(message.filed);
+                    });
 
-                prom.then(success => statusMessage.innerHTML = success)
-                    .catch(filed => statusMessage.innerHTML = filed)
-            });
-    
-            for(let j = 0; j < 2; j++) {
-                for(let i = 0; i < inp[j].length; i++) {
-                    inp[i].value = "";
+                    prom.then(success => statusMessage.innerHTML = success)
+                        .catch(filed => statusMessage.innerHTML = filed)
+                    
+                });
+        
+                for(let j = 0; j < 2; j++) {
+                    for(let i = 0; i < inp[j].length; i++) {
+                        inp[i].value = "";
+                    }
                 }
-            }
-            
+                resolve("okey");
+                reject("error");
+            });
         }); 
-        resolve("okey");
+        
+    
+
+    //Slider
+
+    let slideIndex = 1, //текущий слайд
+        slides = document.querySelectorAll('.slider-item'),
+        prev = document.querySelector('.prev'),
+        next = document.querySelector('.next'),
+        dotsWrap = document.querySelector('.slider-dots'),
+        dots = document.querySelectorAll('.dot');
+
+    showSlides(slideIndex);
+
+    function showSlides(n) {
+
+        if(n > slides.length) slideIndex = 1;
+        if(n < 1) slideIndex = slides.length;
+
+        slides.forEach(item => item.style.display = "none");
+
+        dots.forEach(item => item.classList.remove('dot-active'));
+
+        slides[slideIndex - 1].style.display = "block";
+        dots[slideIndex - 1].classList.add('dot-active');
+    }
+
+    function plusSlides(n) {
+        showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+        showSlides(slideIndex = n);
+    }
+
+    prev.addEventListener('click', function() {
+        plusSlides(-1);
     });
+
+    next.addEventListener('click', function() {
+        plusSlides(1);
+    });
+
+    dotsWrap.addEventListener('click', function(event) {
+        for(let i = 0; i < dots.length + 1; i++) {
+            if(event.target.classList.contains('dot') && event.target == dots[i-1]) {
+                currentSlide(i);
+            }
+        }
+    });
+
+    //Calc
+
+    let persons = document.querySelectorAll('.counter-block-input')[0],
+        restDays = document.querySelectorAll('.counter-block-input')[1],
+        place = document.getElementById('select'),
+        totalValue = document.getElementById('total'),
+        personsSum = 0,
+        daysSum = 0,
+        total = 0;
+
+        totalValue.innerHTML = 0;
+
+        persons.addEventListener('change', function() {
+            personsSum = + this.value;
+            total = (daysSum + personsSum) * 4000;
+            
+            if(restDays.value == '' || persons.value == '') {
+                totalValue.innerHTML = 0;
+                console.log(restDays.value.length);
+            } else {
+                totalValue.innerHTML = total;
+            }
+        });
+
+        restDays.addEventListener('change', function() {
+            daysSum = + this.value;
+            total = (daysSum + personsSum) * 4000;
+
+            if(persons.value == '' && restDays.value == '' || restDays.value == '' || persons.value == '') {
+                totalValue.innerHTML = 0;
+            } else {
+                totalValue.innerHTML = total;
+            }
+        });
+
+        place.addEventListener('change', function() {
+            if(restDays.value == '' || persons.value == '') {
+                totalValue.innerHTML = 0;
+            } else {
+                let a = total;
+
+                totalValue.innerHTML = a * this.options[this.selectedIndex].value;
+            }
+        });
 });
